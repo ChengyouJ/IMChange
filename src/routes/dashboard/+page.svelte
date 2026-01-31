@@ -1,237 +1,297 @@
 <script>
     import { enhance } from "$app/forms";
+    import {
+        Card,
+        CardHeader,
+        CardTitle,
+        CardContent,
+        Button,
+        Input,
+        Badge,
+        Table,
+        TableHeader,
+        TableBody,
+        TableRow,
+        TableHead,
+        TableCell,
+    } from "$lib/components/ui";
     export let data;
+
+    function getStatusVariant(status) {
+        if (status === "available") return "success";
+        if (status === "reserved") return "warning";
+        return "default";
+    }
+
+    function getRequestStatusVariant(status) {
+        if (status === "accepted") return "success";
+        if (status === "pending") return "warning";
+        if (status === "rejected") return "destructive";
+        return "default";
+    }
 </script>
 
-<h1>Dashboard</h1>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1
+        class="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent"
+    >
+        Dashboard
+    </h1>
 
-<div class="dashboard-grid">
-    <div class="section inventory">
-        <h2>My Surplus Inventory</h2>
+    <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Inventory Section -->
+        <div class="lg:col-span-2 space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>My Surplus Inventory</CardTitle>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <!-- Add Item Form -->
+                    <form
+                        method="POST"
+                        action="?/addItem"
+                        use:enhance
+                        class="p-4 bg-muted/50 rounded-lg space-y-4"
+                    >
+                        <h3 class="font-semibold text-lg">Add New Item</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <Input
+                                name="name"
+                                placeholder="Item Name (e.g. Pasta)"
+                                required
+                            />
+                            <Input
+                                name="quantity"
+                                type="number"
+                                placeholder="Quantity"
+                                required
+                                class="md:col-span-1"
+                            />
+                            <Input
+                                name="unit"
+                                placeholder="Unit (kg/boxes)"
+                                required
+                            />
+                        </div>
+                        <div class="flex gap-3">
+                            <Input
+                                name="expiry_date"
+                                type="date"
+                                placeholder="Expiry Date"
+                                class="flex-1"
+                            />
+                            <Button type="submit">Add Item</Button>
+                        </div>
+                    </form>
 
-        <form method="POST" action="?/addItem" use:enhance class="add-form">
-            <h3>Add New Item</h3>
-            <div class="form-row">
-                <input
-                    name="name"
-                    placeholder="Item Name (e.g. Pasta)"
-                    required
-                />
-                <input
-                    name="quantity"
-                    type="number"
-                    placeholder="Qty"
-                    required
-                    style="width: 80px"
-                />
-                <input
-                    name="unit"
-                    placeholder="Unit (kg/boxes)"
-                    required
-                    style="width: 100px"
-                />
-            </div>
-            <div class="form-row">
-                <input name="expiry_date" type="date" placeholder="Expiry" />
-                <button type="submit">Add Item</button>
-            </div>
-        </form>
+                    <!-- Inventory Table -->
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Item</TableHead>
+                                <TableHead>Quantity</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Action</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {#each data.items as item}
+                                <TableRow>
+                                    <TableCell class="font-medium"
+                                        >{item.name}</TableCell
+                                    >
+                                    <TableCell
+                                        >{item.quantity} {item.unit}</TableCell
+                                    >
+                                    <TableCell>
+                                        <Badge
+                                            variant={getStatusVariant(
+                                                item.status,
+                                            )}
+                                        >
+                                            {item.status}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <form
+                                            method="POST"
+                                            action="?/deleteItem"
+                                            use:enhance
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="id"
+                                                value={item.id}
+                                            />
+                                            <Button
+                                                type="submit"
+                                                variant="destructive"
+                                                size="sm"
+                                            >
+                                                Delete
+                                            </Button>
+                                        </form>
+                                    </TableCell>
+                                </TableRow>
+                            {:else}
+                                <TableRow>
+                                    <TableCell
+                                        colspan="4"
+                                        class="text-center text-muted-foreground"
+                                    >
+                                        No items listed.
+                                    </TableCell>
+                                </TableRow>
+                            {/each}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each data.items as item}
-                    <tr>
-                        <td>{item.name}</td>
-                        <td>{item.quantity} {item.unit}</td>
-                        <td>
-                            <span class="badge {item.status}"
-                                >{item.status}</span
-                            >
-                        </td>
-                        <td>
-                            <form
-                                method="POST"
-                                action="?/deleteItem"
-                                use:enhance
-                            >
-                                <input
-                                    type="hidden"
-                                    name="id"
-                                    value={item.id}
-                                />
-                                <button class="danger-btn">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                {:else}
-                    <tr><td colspan="4">No items listed.</td></tr>
-                {/each}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="section requests">
-        <h2>Incoming Requests</h2>
-        {#if data.incomingRequests.length === 0}
-            <p>No incoming requests.</p>
-        {:else}
-            <div class="card-list">
-                {#each data.incomingRequests as req}
-                    <div class="request-card">
-                        <p>
-                            <strong>{req.requester_name}</strong> requests
-                            <strong>{req.item_name}</strong>
+        <!-- Requests Section -->
+        <div class="space-y-6">
+            <!-- Incoming Requests -->
+            <Card>
+                <CardHeader>
+                    <CardTitle>Incoming Requests</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {#if data.incomingRequests.length === 0}
+                        <p class="text-sm text-muted-foreground">
+                            No incoming requests.
                         </p>
-                        <p class="status">Status: {req.status}</p>
-                        {#if req.status === "pending"}
-                            <div class="actions">
-                                <form
-                                    method="POST"
-                                    action="?/updateRequestStatus"
-                                    use:enhance
+                    {:else}
+                        <div class="space-y-3">
+                            {#each data.incomingRequests as req}
+                                <div
+                                    class="p-4 border rounded-lg space-y-3 hover:bg-accent/50 transition-colors"
                                 >
-                                    <input
-                                        type="hidden"
-                                        name="request_id"
-                                        value={req.id}
-                                    />
-                                    <input
-                                        type="hidden"
-                                        name="status"
-                                        value="accepted"
-                                    />
-                                    <button class="accept-btn">Accept</button>
-                                </form>
-                                <form
-                                    method="POST"
-                                    action="?/updateRequestStatus"
-                                    use:enhance
-                                >
-                                    <input
-                                        type="hidden"
-                                        name="request_id"
-                                        value={req.id}
-                                    />
-                                    <input
-                                        type="hidden"
-                                        name="status"
-                                        value="rejected"
-                                    />
-                                    <button class="reject-btn">Reject</button>
-                                </form>
-                            </div>
-                        {:else if req.status === "accepted"}
-                            <p>Contact: {req.requester_email}</p>
-                        {/if}
-                    </div>
-                {/each}
-            </div>
-        {/if}
+                                    <div>
+                                        <p class="text-sm">
+                                            <span class="font-semibold"
+                                                >{req.requester_name}</span
+                                            >
+                                            requests
+                                            <span
+                                                class="font-semibold text-primary"
+                                                >{req.item_name}</span
+                                            >
+                                        </p>
+                                        <Badge
+                                            variant={getRequestStatusVariant(
+                                                req.status,
+                                            )}
+                                            class="mt-2"
+                                        >
+                                            {req.status}
+                                        </Badge>
+                                    </div>
+                                    {#if req.status === "pending"}
+                                        <div class="flex gap-2">
+                                            <form
+                                                method="POST"
+                                                action="?/updateRequestStatus"
+                                                use:enhance
+                                                class="flex-1"
+                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="request_id"
+                                                    value={req.id}
+                                                />
+                                                <input
+                                                    type="hidden"
+                                                    name="status"
+                                                    value="accepted"
+                                                />
+                                                <Button
+                                                    type="submit"
+                                                    variant="default"
+                                                    size="sm"
+                                                    class="w-full"
+                                                >
+                                                    Accept
+                                                </Button>
+                                            </form>
+                                            <form
+                                                method="POST"
+                                                action="?/updateRequestStatus"
+                                                use:enhance
+                                                class="flex-1"
+                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="request_id"
+                                                    value={req.id}
+                                                />
+                                                <input
+                                                    type="hidden"
+                                                    name="status"
+                                                    value="rejected"
+                                                />
+                                                <Button
+                                                    type="submit"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    class="w-full"
+                                                >
+                                                    Reject
+                                                </Button>
+                                            </form>
+                                        </div>
+                                    {:else if req.status === "accepted"}
+                                        <p
+                                            class="text-sm text-muted-foreground"
+                                        >
+                                            Contact: <span class="font-medium"
+                                                >{req.requester_email}</span
+                                            >
+                                        </p>
+                                    {/if}
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+                </CardContent>
+            </Card>
 
-        <h2>My Requests</h2>
-        {#if data.outgoingRequests.length === 0}
-            <p>You haven't requested anything.</p>
-        {:else}
-            <div class="card-list">
-                {#each data.outgoingRequests as req}
-                    <div class="request-card">
-                        <p>
-                            Requested <strong>{req.item_name}</strong> from {req.donor_name}
+            <!-- My Requests -->
+            <Card>
+                <CardHeader>
+                    <CardTitle>My Requests</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {#if data.outgoingRequests.length === 0}
+                        <p class="text-sm text-muted-foreground">
+                            You haven't requested anything.
                         </p>
-                        <span class="badge {req.status}">{req.status}</span>
-                    </div>
-                {/each}
-            </div>
-        {/if}
+                    {:else}
+                        <div class="space-y-3">
+                            {#each data.outgoingRequests as req}
+                                <div
+                                    class="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                                >
+                                    <p class="text-sm mb-2">
+                                        Requested <span
+                                            class="font-semibold text-primary"
+                                            >{req.item_name}</span
+                                        >
+                                        from {req.donor_name}
+                                    </p>
+                                    <Badge
+                                        variant={getRequestStatusVariant(
+                                            req.status,
+                                        )}
+                                    >
+                                        {req.status}
+                                    </Badge>
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+                </CardContent>
+            </Card>
+        </div>
     </div>
 </div>
-
-<style>
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
-    }
-    .section {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    }
-    .add-form {
-        margin-bottom: 2rem;
-        background: #f1f5f9;
-        padding: 1rem;
-        border-radius: 0.5rem;
-    }
-    .form-row {
-        display: flex;
-        gap: 0.5rem;
-    }
-    .danger-btn {
-        background: #fee2e2;
-        color: #ef4444;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8rem;
-    }
-    .badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-    .badge.available {
-        background: #dcfce7;
-        color: #166534;
-    }
-    .badge.reserved {
-        background: #fff7ed;
-        color: #9a3412;
-    }
-    .badge.pending {
-        background: #fef9c3;
-        color: #854d0e;
-    }
-    .badge.accepted {
-        background: #fee2e2;
-        color: #166534;
-        background: #dcfce7;
-    } /* Logic error in color, fixing */
-    .badge.rejected {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .request-card {
-        border: 1px solid #e2e8f0;
-        padding: 1rem;
-        margin-bottom: 0.5rem;
-        border-radius: 0.25rem;
-    }
-    .actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-    .accept-btn {
-        background: #22c55e;
-    }
-    .reject-btn {
-        background: #ef4444;
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>

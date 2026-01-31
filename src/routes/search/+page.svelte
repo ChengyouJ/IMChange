@@ -1,100 +1,104 @@
 <script>
     import { enhance } from "$app/forms";
+    import {
+        Card,
+        CardContent,
+        Button,
+        Input,
+        Badge,
+    } from "$lib/components/ui";
+    import { Search, MapPin, Calendar } from "lucide-svelte";
     export let data;
     export let form;
 </script>
 
-<h1>Find Food Nearby</h1>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1
+        class="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent"
+    >
+        Find Food Nearby
+    </h1>
 
-<form method="GET" class="search-bar">
-    <input
-        name="q"
-        type="search"
-        placeholder="Search for pasta, rice, etc..."
-    />
-    <button type="submit">Search</button>
-</form>
-
-<div class="results-grid">
-    {#each data.items as item}
-        <div class="item-card">
-            <h3>{item.name}</h3>
-            <p class="qty">{item.quantity} {item.unit}</p>
-            <p class="source">
-                {item.foodbank_name} <br />
-                <small>{item.address}</small>
-            </p>
-            {#if item.expiry_date}
-                <p class="expiry">
-                    Expires: {new Date(item.expiry_date).toLocaleDateString()}
-                </p>
-            {/if}
-
-            <form method="POST" action="?/requestItem" use:enhance>
-                <input type="hidden" name="item_id" value={item.id} />
-                <button type="submit">Request Item</button>
-            </form>
+    <!-- Search Bar -->
+    <form method="GET" class="mb-8">
+        <div class="flex gap-3 max-w-2xl">
+            <div class="relative flex-1">
+                <Search
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground"
+                />
+                <Input
+                    name="q"
+                    type="search"
+                    placeholder="Search for pasta, rice, etc..."
+                    class="pl-10"
+                />
+            </div>
+            <Button type="submit">Search</Button>
         </div>
-    {:else}
-        <p>No food found matching your criteria.</p>
-    {/each}
+    </form>
+
+    <!-- Results Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {#each data.items as item}
+            <Card class="hover:shadow-lg transition-shadow">
+                <CardContent class="p-6 space-y-4">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">{item.name}</h3>
+                        <p class="text-2xl font-bold text-primary">
+                            {item.quantity}
+                            {item.unit}
+                        </p>
+                    </div>
+
+                    <div class="space-y-2 text-sm">
+                        <div
+                            class="flex items-start gap-2 text-muted-foreground"
+                        >
+                            <MapPin class="w-4 h-4 mt-0.5 flex-shrink-0" />
+                            <div>
+                                <p class="font-medium text-foreground">
+                                    {item.foodbank_name}
+                                </p>
+                                <p class="text-xs">{item.address}</p>
+                            </div>
+                        </div>
+
+                        {#if item.expiry_date}
+                            <div
+                                class="flex items-center gap-2 text-destructive"
+                            >
+                                <Calendar class="w-4 h-4" />
+                                <span class="text-xs">
+                                    Expires: {new Date(
+                                        item.expiry_date,
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <form method="POST" action="?/requestItem" use:enhance>
+                        <input type="hidden" name="item_id" value={item.id} />
+                        <Button type="submit" class="w-full"
+                            >Request Item</Button
+                        >
+                    </form>
+                </CardContent>
+            </Card>
+        {:else}
+            <div class="col-span-full text-center py-12">
+                <p class="text-muted-foreground text-lg">
+                    No food found matching your criteria.
+                </p>
+            </div>
+        {/each}
+    </div>
 </div>
 
 {#if form?.success}
-    <div class="toast">Request Sent!</div>
+    <div
+        class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in"
+    >
+        Request Sent Successfully!
+    </div>
 {/if}
-
-<style>
-    .search-bar {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        max-width: 600px;
-    }
-    .results-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-    .item-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-        border: 1px solid #e2e8f0;
-    }
-    .qty {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: var(--primary);
-    }
-    .source {
-        color: var(--secondary);
-        font-size: 0.9rem;
-        margin: 0.5rem 0;
-    }
-    .expiry {
-        font-size: 0.8rem;
-        color: var(--danger);
-    }
-    .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: #22c55e;
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 0.5rem;
-        animation: fadein 0.3s;
-    }
-    @keyframes fadein {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
