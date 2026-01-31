@@ -1,10 +1,17 @@
 import { fail, redirect } from '@sveltejs/kit';
 import db from '$lib/server/db';
+import { calculateDistance } from '$lib/server/distance';
 
 export const load = async ({ locals, url }) => {
     if (!locals.user) throw redirect(302, '/login');
 
     const search = url.searchParams.get('q') || '';
+
+    // Get current user's location
+    const currentUser = await db('users')
+        .where({ id: locals.user.id })
+        .select('latitude', 'longitude')
+        .first();
 
     let query = db('items')
         .join('users', 'items.user_id', 'users.id')
@@ -18,7 +25,25 @@ export const load = async ({ locals, url }) => {
 
     const items = await query;
 
-    return { items };
+    // Calculate distance for each item and add it to the item object
+    const itemsWithDistance = items.map(item => {
+        const distance = calculateDistance(
+            currentUser.latitude,
+            currentUser.longitude,
+            item.latitude,
+            item.longitude
+        );
+
+        return {
+            ...item,
+            distance // in kilometers
+        };
+    });
+
+    // Sort by distance (closest first)
+    itemsWithDistance.sort((a, b) => a.distance - b.distance);
+
+    return { items: itemsWithDistance };
 };
 
 export const actions = {

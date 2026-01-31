@@ -9,6 +9,7 @@ declare global {
                 email: string;
                 name: string;
                 address?: string;
+                address_line_1?: string;
                 latitude?: number;
                 longitude?: number;
             }

@@ -9,9 +9,13 @@ export const actions = {
         const password = data.get('password') as string;
         const name = data.get('name') as string;
         const address = data.get('address') as string;
+        const address_line_1 = data.get('address_line_1') as string;
+        const latitude = data.get('latitude') as string;
+        const longitude = data.get('longitude') as string;
         const contact_info = data.get('contact_info') as string;
 
-        if (!email || !password || !name) {
+        // Validate required fields including address validation
+        if (!email || !password || !name || !address_line_1 || !latitude || !longitude) {
             return fail(400, { missing: true });
         }
 
@@ -22,15 +26,16 @@ export const actions = {
 
         const password_hash = await hashPassword(password);
 
-        // MVP: Latitude/Longitude defaults. Ideally use geocoding here.
+        // Insert user with validated address and coordinates
         const [id] = await db('users').insert({
             email,
             password_hash,
             name,
-            address,
+            address, // Full display address
+            address_line_1, // Validated address line
             contact_info,
-            latitude: 0,
-            longitude: 0
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude)
         });
 
         cookies.set('session', id.toString(), {

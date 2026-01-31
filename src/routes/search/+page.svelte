@@ -20,7 +20,7 @@
     </h1>
 
     <!-- Search Bar -->
-    <form method="GET" class="mb-8">
+    <form method="GET" class="mb-4">
         <div class="flex gap-3 max-w-2xl">
             <div class="relative flex-1">
                 <Search
@@ -36,6 +36,14 @@
             <Button type="submit">Search</Button>
         </div>
     </form>
+
+    <!-- Sorting Info -->
+    {#if data.items.length > 0}
+        <div class="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin class="w-4 h-4" />
+            <span>Showing {data.items.length} items sorted by distance (closest first)</span>
+        </div>
+    {/if}
 
     <!-- Results Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -55,11 +63,19 @@
                             class="flex items-start gap-2 text-muted-foreground"
                         >
                             <MapPin class="w-4 h-4 mt-0.5 flex-shrink-0" />
-                            <div>
+                            <div class="flex-1">
                                 <p class="font-medium text-foreground">
                                     {item.foodbank_name}
                                 </p>
                                 <p class="text-xs">{item.address}</p>
+                                {#if item.distance !== undefined}
+                                    <p class="text-xs font-semibold text-primary mt-1">
+                                        {item.distance < 1
+                                            ? `${Math.round(item.distance * 1000)} m away`
+                                            : `${item.distance.toFixed(1)} km away`
+                                        }
+                                    </p>
+                                {/if}
                             </div>
                         </div>
 
