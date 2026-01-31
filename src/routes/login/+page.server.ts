@@ -18,7 +18,13 @@ export const actions = {
             return fail(400, { invalid: true });
         }
 
-        cookies.set('session', user.id.toString(), { path: '/' });
+        cookies.set('session', user.id.toString(), {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false, // Set to true in production with HTTPS
+            maxAge: 60 * 60 * 24 * 7 // 7 days
+        });
 
         throw redirect(303, '/dashboard');
     }

@@ -1,1 +1,10 @@
 node_modules
+.svelte-kit
+*.sqlite3
+.claude/
+nul
+.env
+.env.*
+!.env.example
+build/
+.DS_Store
