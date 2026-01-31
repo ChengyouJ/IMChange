@@ -149,11 +149,14 @@
             <Card>
                 <CardHeader>
                     <CardTitle>Incoming Requests</CardTitle>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        Accepted requests appear on your <a href="/deliveries" class="text-primary underline">Deliveries</a> page
+                    </p>
                 </CardHeader>
                 <CardContent>
                     {#if data.incomingRequests.length === 0}
                         <p class="text-sm text-muted-foreground">
-                            No incoming requests.
+                            No pending requests.
                         </p>
                     {:else}
                         <div class="space-y-3">
@@ -254,11 +257,14 @@
             <Card>
                 <CardHeader>
                     <CardTitle>My Requests</CardTitle>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        Accepted requests appear on your <a href="/deliveries" class="text-primary underline">Deliveries</a> page
+                    </p>
                 </CardHeader>
                 <CardContent>
                     {#if data.outgoingRequests.length === 0}
                         <p class="text-sm text-muted-foreground">
-                            You haven't requested anything.
+                            No pending or rejected requests.
                         </p>
                     {:else}
                         <div class="space-y-3">

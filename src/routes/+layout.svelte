@@ -42,6 +42,12 @@
                     >
                         My Inventory
                     </a>
+                    <a
+                        href="/deliveries"
+                        class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        Deliveries
+                    </a>
                     <div
                         class="flex items-center gap-3 ml-4 pl-4 border-l border-border"
                     >
@@ -100,6 +106,12 @@
                         class="block py-2 text-sm font-medium text-muted-foreground hover:text-primary"
                     >
                         My Inventory
+                    </a>
+                    <a
+                        href="/deliveries"
+                        class="block py-2 text-sm font-medium text-muted-foreground hover:text-primary"
+                    >
+                        Deliveries
                     </a>
                     <div class="pt-3 border-t border-border">
                         <p class="text-sm text-muted-foreground mb-3">

@@ -6,18 +6,20 @@ export const load = async ({ locals }) => {
 
     const items = await db('items').where({ user_id: locals.user.id });
 
-    // Requests for MY items (incoming)
+    // Requests for MY items (incoming) - only show pending (accepted requests are on deliveries page)
     const incomingRequests = await db('requests')
         .join('items', 'requests.item_id', 'items.id')
         .join('users', 'requests.requester_id', 'users.id')
         .where('items.user_id', locals.user.id)
+        .where('requests.status', 'pending')
         .select('requests.id', 'requests.status', 'items.name as item_name', 'users.name as requester_name', 'users.email as requester_email');
 
-    // Requests I MADE (outgoing)
+    // Requests I MADE (outgoing) - only show pending/rejected (accepted requests are on deliveries page)
     const outgoingRequests = await db('requests')
         .join('items', 'requests.item_id', 'items.id')
         .join('users', 'items.user_id', 'users.id')
         .where('requests.requester_id', locals.user.id)
+        .whereIn('requests.status', ['pending', 'rejected'])
         .select('requests.id', 'requests.status', 'items.name as item_name', 'users.name as donor_name');
 
     return { items, incomingRequests, outgoingRequests };
@@ -59,9 +61,12 @@ export const actions = {
             .first();
 
         if (req) {
-            await db('requests').where({ id: requestId }).update({ status: newStatus });
+            await db('requests').where({ id: requestId }).update({
+                status: newStatus,
+                delivery_status: newStatus // Also update delivery_status
+            });
 
-            // If accepted, mark item as taken/reserved?
+            // If accepted, mark item as reserved
             if (newStatus === 'accepted') {
                 await db('items').where({ id: req.item_id }).update({ status: 'reserved' });
             }
