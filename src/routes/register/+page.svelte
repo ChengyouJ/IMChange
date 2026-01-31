@@ -134,16 +134,6 @@
                         </button>
                     </div>
 
-                    <!-- Debug Info -->
-                    <div class="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded font-mono">
-                        <div>Postcode: "{postcode}"</div>
-                        <div>Valid: {isPostcodeValid ? 'YES' : 'NO'}</div>
-                        <div>Can Search: {canSearch ? 'YES' : 'NO'}</div>
-                        <div>Searching: {isSearching ? 'YES' : 'NO'}</div>
-                        <div>Addresses: {addresses.length}</div>
-                        <div>Selected: {selectedAddress ? 'YES' : 'NO'}</div>
-                    </div>
-
                     {#if !isPostcodeValid && postcode && postcode.length > 3}
                         <div class="p-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-700 dark:text-yellow-400 rounded-md text-sm">
                             Please enter a valid UK postcode format (e.g. W2 1UF)
