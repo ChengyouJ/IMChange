@@ -17,7 +17,7 @@ export const load = async ({ locals, url }) => {
         .join('users', 'items.user_id', 'users.id')
         .whereNot('items.user_id', locals.user.id)
         .andWhere('items.status', 'available')
-        .select('items.*', 'users.name as foodbank_name', 'users.address', 'users.latitude', 'users.longitude');
+        .select('items.*', 'users.name as foodbank_name', 'users.address', 'users.latitude', 'users.longitude', 'users.phone', 'users.email');
 
     if (search) {
         query = query.where('items.name', 'like', `%${search}%`);
@@ -43,7 +43,29 @@ export const load = async ({ locals, url }) => {
     // Sort by distance (closest first)
     itemsWithDistance.sort((a, b) => a.distance - b.distance);
 
-    return { items: itemsWithDistance };
+    // Get user's existing requests for these items
+    const itemIds = itemsWithDistance.map(item => item.id);
+    const existingRequests = await db('requests')
+        .where({ requester_id: locals.user.id })
+        .whereIn('item_id', itemIds)
+        .select('item_id');
+
+    const requestedItemIds = new Set(existingRequests.map(r => r.item_id));
+
+    // Add requested flag to items
+    const itemsWithRequestStatus = itemsWithDistance.map(item => ({
+        ...item,
+        requested: requestedItemIds.has(item.id)
+    }));
+
+    // Return items and user location for map centering
+    return {
+        items: itemsWithRequestStatus,
+        userLocation: {
+            latitude: currentUser.latitude,
+            longitude: currentUser.longitude
+        }
+    };
 };
 
 export const actions = {
