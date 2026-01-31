@@ -7,7 +7,7 @@
         Input,
         Badge,
     } from "$lib/components/ui";
-    import { Search, MapPin, Calendar } from "lucide-svelte";
+    import { Search, MapPin } from "lucide-svelte";
     export let data;
     export let form;
 </script>
@@ -78,19 +78,6 @@
                                 {/if}
                             </div>
                         </div>
-
-                        {#if item.expiry_date}
-                            <div
-                                class="flex items-center gap-2 text-destructive"
-                            >
-                                <Calendar class="w-4 h-4" />
-                                <span class="text-xs">
-                                    Expires: {new Date(
-                                        item.expiry_date,
-                                    ).toLocaleDateString()}
-                                </span>
-                            </div>
-                        {/if}
                     </div>
 
                     <form method="POST" action="?/requestItem" use:enhance>

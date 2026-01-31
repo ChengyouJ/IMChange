@@ -73,13 +73,7 @@
                                 required
                             />
                         </div>
-                        <div class="flex gap-3">
-                            <Input
-                                name="expiry_date"
-                                type="date"
-                                placeholder="Expiry Date"
-                                class="flex-1"
-                            />
+                        <div class="flex justify-end">
                             <Button type="submit">Add Item</Button>
                         </div>
                     </form>

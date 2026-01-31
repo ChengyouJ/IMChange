@@ -30,14 +30,12 @@ export const actions = {
         const name = data.get('name') as string;
         const quantity = data.get('quantity');
         const unit = data.get('unit') as string;
-        const expiry_date = data.get('expiry_date') as string; // Optional
 
         await db('items').insert({
             user_id: locals.user.id,
             name,
             quantity,
             unit,
-            expiry_date: expiry_date || null,
             status: 'available'
         });
     },
