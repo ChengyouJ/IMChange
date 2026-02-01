@@ -3,6 +3,7 @@
     import { page } from "$app/stores";
     import { Button } from "$lib/components/ui";
     import { Menu, X } from "lucide-svelte";
+    import NotificationToast from "$lib/components/NotificationToast.svelte";
 
     let mobileMenuOpen = false;
 </script>
@@ -151,3 +152,5 @@
 <main>
     <slot />
 </main>
+
+<NotificationToast />

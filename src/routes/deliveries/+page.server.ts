@@ -1,7 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
 import db from '$lib/server/db';
 
-export const load = async ({ locals }) => {
+export const load = async ({ locals, depends }) => {
+    depends('app:deliveries');
+
     if (!locals.user) throw redirect(302, '/login');
 
     // Deliveries where I'm the SENDER (I own the item)

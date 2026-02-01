@@ -2,7 +2,9 @@ import { fail, redirect } from '@sveltejs/kit';
 import db from '$lib/server/db';
 import { calculateDistance } from '$lib/server/distance';
 
-export const load = async ({ locals, url }) => {
+export const load = async ({ locals, url, depends }) => {
+    depends('app:search');
+
     if (!locals.user) throw redirect(302, '/login');
 
     const search = url.searchParams.get('q') || '';

@@ -1,5 +1,7 @@
 <script>
     import { enhance } from "$app/forms";
+    import { invalidate } from "$app/navigation";
+    import { onMount, onDestroy } from "svelte";
     import {
         Card,
         CardContent,
@@ -9,6 +11,7 @@
     } from "$lib/components/ui";
     import { Search, MapPin } from "lucide-svelte";
     import FoodBankMap from "$lib/components/FoodBankMap.svelte";
+    import { notifications } from "$lib/stores/notifications";
     export let data;
     export let form;
 
@@ -16,6 +19,31 @@
     let requestedItems = new Set(
         data.items.filter(item => item.requested).map(item => item.id)
     );
+
+    // Polling interval
+    let pollInterval;
+
+    onMount(() => {
+        // Refresh data every 3 seconds
+        pollInterval = setInterval(() => {
+            invalidate('app:search');
+        }, 3000);
+    });
+
+    onDestroy(() => {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+    });
+
+    // Update requestedItems when data changes
+    $: {
+        const newRequestedItems = new Set(
+            data.items.filter(item => item.requested).map(item => item.id)
+        );
+        // Merge with existing requests (preserve client-side state)
+        requestedItems = new Set([...requestedItems, ...newRequestedItems]);
+    }
 </script>
 
 <div class="max-w-full mx-auto px-6 py-8">
@@ -119,6 +147,12 @@
                                         if (result.type === 'success') {
                                             requestedItems.add(item.id);
                                             requestedItems = requestedItems;
+                                            notifications.add({
+                                                message: `Request sent for ${item.name}!`,
+                                                type: 'success',
+                                                link: '/dashboard',
+                                                linkText: 'View in Dashboard'
+                                            });
                                         }
                                         await update();
                                     };
@@ -163,11 +197,3 @@
         </div>
     </div>
 </div>
-
-{#if form?.success}
-    <div
-        class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in"
-    >
-        Request Sent Successfully!
-    </div>
-{/if}

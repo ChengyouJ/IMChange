@@ -1,7 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
 import db from '$lib/server/db';
 
-export const load = async ({ locals }) => {
+export const load = async ({ locals, depends }) => {
+    depends('app:dashboard');
+
     if (!locals.user) throw redirect(302, '/login');
 
     const items = await db('items').where({ user_id: locals.user.id });

@@ -1,5 +1,7 @@
 <script>
     import { enhance } from "$app/forms";
+    import { invalidate } from "$app/navigation";
+    import { onMount, onDestroy } from "svelte";
     import {
         Card,
         CardContent,
@@ -7,10 +9,88 @@
         Badge,
     } from "$lib/components/ui";
     import { Package, Truck, CheckCircle, Clock } from "lucide-svelte";
+    import { notifications } from "$lib/stores/notifications";
 
     export let data;
 
     let activeTab = 'receiver'; // Start with receiver view as they're likely checking deliveries
+
+    // Polling interval
+    let pollInterval;
+    let previousSenderDeliveries = [];
+    let previousReceiverDeliveries = [];
+    let isInitialLoad = true;
+
+    // Detect delivery status changes
+    $: {
+        if (!isInitialLoad) {
+            // Check for new deliveries as receiver (request was accepted)
+            const newReceiverDeliveries = data.receiverDeliveries.filter(delivery =>
+                !previousReceiverDeliveries.some(prev => prev.id === delivery.id)
+            );
+
+            newReceiverDeliveries.forEach(delivery => {
+                notifications.add({
+                    message: `${delivery.sender_name} accepted your request for ${delivery.item_name}!`,
+                    type: 'success',
+                    link: '/deliveries',
+                    linkText: 'View Delivery',
+                    duration: 6000
+                });
+            });
+
+            // Check for status changes on receiver deliveries (sent → received)
+            data.receiverDeliveries.forEach(delivery => {
+                const previous = previousReceiverDeliveries.find(prev => prev.id === delivery.id);
+                if (previous && previous.delivery_status !== delivery.delivery_status) {
+                    if (delivery.delivery_status === 'sent') {
+                        notifications.add({
+                            message: `${delivery.sender_name} shipped ${delivery.item_name}!`,
+                            type: 'info',
+                            link: '/deliveries',
+                            linkText: 'Mark as Received',
+                            duration: 6000
+                        });
+                    }
+                }
+            });
+
+            // Check for status changes on sender deliveries (received confirmation)
+            data.senderDeliveries.forEach(delivery => {
+                const previous = previousSenderDeliveries.find(prev => prev.id === delivery.id);
+                if (previous && previous.delivery_status !== delivery.delivery_status) {
+                    if (delivery.delivery_status === 'completed') {
+                        notifications.add({
+                            message: `${delivery.receiver_name} confirmed receipt of ${delivery.item_name}`,
+                            type: 'success',
+                            duration: 5000
+                        });
+                    }
+                }
+            });
+        }
+
+        previousSenderDeliveries = [...data.senderDeliveries];
+        previousReceiverDeliveries = [...data.receiverDeliveries];
+    }
+
+    onMount(() => {
+        // Mark as not initial load after first render
+        setTimeout(() => {
+            isInitialLoad = false;
+        }, 100);
+
+        // Refresh data every 3 seconds
+        pollInterval = setInterval(() => {
+            invalidate('app:deliveries');
+        }, 3000);
+    });
+
+    onDestroy(() => {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+    });
 
     function getDeliveryStatusVariant(status) {
         if (status === 'completed') return 'success'; // Green
@@ -122,7 +202,18 @@
                                             Sent {formatTimeAgo(delivery.sent_at)}
                                         </div>
 
-                                        <form method="POST" action="?/markAsReceived" use:enhance>
+                                        <form method="POST" action="?/markAsReceived" use:enhance={() => {
+                                            return async ({ result, update }) => {
+                                                if (result.type === 'success') {
+                                                    notifications.add({
+                                                        message: `Delivery received: ${delivery.quantity} ${delivery.unit} of ${delivery.item_name}`,
+                                                        type: 'success',
+                                                        duration: 4000
+                                                    });
+                                                }
+                                                await update();
+                                            };
+                                        }}>
                                             <input type="hidden" name="request_id" value={delivery.id} />
                                             <Button type="submit" class="w-full">
                                                 <CheckCircle class="w-4 h-4 mr-2" />
@@ -221,7 +312,18 @@
                                     </div>
 
                                     {#if delivery.delivery_status === 'accepted'}
-                                        <form method="POST" action="?/markAsSent" use:enhance>
+                                        <form method="POST" action="?/markAsSent" use:enhance={() => {
+                                            return async ({ result, update }) => {
+                                                if (result.type === 'success') {
+                                                    notifications.add({
+                                                        message: `Marked as sent: ${delivery.quantity} ${delivery.unit} of ${delivery.item_name}`,
+                                                        type: 'success',
+                                                        duration: 4000
+                                                    });
+                                                }
+                                                await update();
+                                            };
+                                        }}>
                                             <input type="hidden" name="request_id" value={delivery.id} />
                                             <Button type="submit" class="w-full">
                                                 <Truck class="w-4 h-4 mr-2" />

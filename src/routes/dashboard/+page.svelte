@@ -1,5 +1,7 @@
 <script>
     import { enhance } from "$app/forms";
+    import { invalidate } from "$app/navigation";
+    import { onMount, onDestroy } from "svelte";
     import {
         Card,
         CardHeader,
@@ -15,7 +17,77 @@
         TableHead,
         TableCell,
     } from "$lib/components/ui";
+    import { notifications } from "$lib/stores/notifications";
     export let data;
+
+    // Polling interval
+    let pollInterval;
+    let previousIncomingRequests = [];
+    let previousOutgoingRequests = [];
+    let isInitialLoad = true;
+
+    // Detect new incoming requests (someone requested your item)
+    $: {
+        if (!isInitialLoad) {
+            // Check for new incoming requests
+            const newRequests = data.incomingRequests.filter(req =>
+                !previousIncomingRequests.some(prev => prev.id === req.id)
+            );
+
+            newRequests.forEach(req => {
+                notifications.add({
+                    message: `${req.requester_name} requested ${req.item_name}`,
+                    type: 'info',
+                    link: '/dashboard',
+                    linkText: 'View Request',
+                    duration: 6000
+                });
+            });
+
+            // Check for status changes on outgoing requests (accepted/rejected)
+            data.outgoingRequests.forEach(req => {
+                const previous = previousOutgoingRequests.find(prev => prev.id === req.id);
+                if (previous && previous.status !== req.status) {
+                    if (req.status === 'accepted') {
+                        notifications.add({
+                            message: `Your request for ${req.item_name} was accepted!`,
+                            type: 'success',
+                            link: '/deliveries',
+                            linkText: 'View Delivery',
+                            duration: 6000
+                        });
+                    } else if (req.status === 'rejected') {
+                        notifications.add({
+                            message: `Your request for ${req.item_name} was rejected`,
+                            type: 'warning',
+                            duration: 5000
+                        });
+                    }
+                }
+            });
+        }
+
+        previousIncomingRequests = [...data.incomingRequests];
+        previousOutgoingRequests = [...data.outgoingRequests];
+    }
+
+    onMount(() => {
+        // Mark as not initial load after first render
+        setTimeout(() => {
+            isInitialLoad = false;
+        }, 100);
+
+        // Refresh data every 3 seconds
+        pollInterval = setInterval(() => {
+            invalidate('app:dashboard');
+        }, 3000);
+    });
+
+    onDestroy(() => {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+    });
 
     function getStatusVariant(status) {
         if (status === "available") return "success";
@@ -50,7 +122,22 @@
                     <form
                         method="POST"
                         action="?/addItem"
-                        use:enhance
+                        use:enhance={() => {
+                            return async ({ result, update, formElement }) => {
+                                if (result.type === 'success') {
+                                    const formData = new FormData(formElement);
+                                    const name = formData.get('name');
+                                    const quantity = formData.get('quantity');
+                                    const unit = formData.get('unit');
+                                    notifications.add({
+                                        message: `Added ${quantity} ${unit} of ${name} to inventory`,
+                                        type: 'success',
+                                        duration: 3000
+                                    });
+                                }
+                                await update();
+                            };
+                        }}
                         class="p-4 bg-muted/50 rounded-lg space-y-4"
                     >
                         <h3 class="font-semibold text-lg">Add New Item</h3>
@@ -110,7 +197,19 @@
                                         <form
                                             method="POST"
                                             action="?/deleteItem"
-                                            use:enhance
+                                            use:enhance={() => {
+                                                const itemName = item.name;
+                                                return async ({ result, update }) => {
+                                                    if (result.type === 'success') {
+                                                        notifications.add({
+                                                            message: `Deleted ${itemName} from inventory`,
+                                                            type: 'info',
+                                                            duration: 3000
+                                                        });
+                                                    }
+                                                    await update();
+                                                };
+                                            }}
                                         >
                                             <input
                                                 type="hidden"
@@ -189,7 +288,19 @@
                                             <form
                                                 method="POST"
                                                 action="?/updateRequestStatus"
-                                                use:enhance
+                                                use:enhance={() => {
+                                                    return async ({ result, update }) => {
+                                                        if (result.type === 'success') {
+                                                            notifications.add({
+                                                                message: `Request accepted for ${req.item_name}!`,
+                                                                type: 'success',
+                                                                link: '/deliveries',
+                                                                linkText: 'View Deliveries'
+                                                            });
+                                                        }
+                                                        await update();
+                                                    };
+                                                }}
                                                 class="flex-1"
                                             >
                                                 <input
@@ -214,7 +325,18 @@
                                             <form
                                                 method="POST"
                                                 action="?/updateRequestStatus"
-                                                use:enhance
+                                                use:enhance={() => {
+                                                    return async ({ result, update }) => {
+                                                        if (result.type === 'success') {
+                                                            notifications.add({
+                                                                message: `Request rejected for ${req.item_name}`,
+                                                                type: 'info',
+                                                                duration: 3000
+                                                            });
+                                                        }
+                                                        await update();
+                                                    };
+                                                }}
                                                 class="flex-1"
                                             >
                                                 <input
