@@ -49,7 +49,7 @@
 <div class="max-w-full mx-auto px-6 py-8 bg-stone-50 min-h-screen">
     <div class="mb-8">
         <h1
-            class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent mb-3"
+            class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent mb-3 pb-1"
         >
             Find Food Nearby
         </h1>

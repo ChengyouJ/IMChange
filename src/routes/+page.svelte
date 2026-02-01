@@ -18,7 +18,7 @@
             </div>
 
             <h1
-                class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-green-600 via-emerald-500 to-green-500 bg-clip-text text-transparent leading-tight"
+                class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-green-600 via-emerald-500 to-green-500 bg-clip-text text-transparent leading-tight pb-2"
             >
                 Share Surplus,<br />Nourish Communities
             </h1>

@@ -106,9 +106,9 @@
 <div class="max-w-7xl mx-auto px-4 py-8 min-h-screen bg-gradient-to-br from-amber-50/30 via-white to-green-50/30">
     <div class="mb-8">
         <h1
-            class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"
+            class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent pb-1"
         >
-            📦 Your Dashboard
+            Your Dashboard
         </h1>
         <p class="text-stone-600 text-lg">Manage your surplus and requests with care</p>
     </div>

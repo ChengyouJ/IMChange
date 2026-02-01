@@ -19,7 +19,7 @@
                 <div
                     class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg shadow-sm"
                 ></div>
-                <span class="hidden sm:inline bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">FoodBank Exchange</span>
+                <span class="hidden sm:inline bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent pb-1">FoodBank Exchange</span>
             </a>
 
             <!-- Desktop Navigation -->
