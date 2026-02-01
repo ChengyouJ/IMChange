@@ -126,28 +126,22 @@
                 className: 'food-bank-marker',
                 html: `
                     <div style="
-                        background-color: #10b981;
-                        width: 32px;
-                        height: 32px;
+                        background-color: #22c55e;
+                        width: 30px;
+                        height: 30px;
                         border-radius: 50% 50% 50% 0;
                         transform: rotate(-45deg);
-                        border: 3px solid white;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        border: 2px solid white;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
                         display: flex;
                         align-items: center;
-                        justify-content: center;
+                        justify-center: center;
                     ">
-                        <span style="
-                            transform: rotate(45deg);
-                            color: white;
-                            font-weight: bold;
-                            font-size: 14px;
-                        ">🍎</span>
                     </div>
                 `,
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
+                iconSize: [30, 30],
+                iconAnchor: [15, 30],
+                popupAnchor: [0, -30]
             });
 
             const marker = L.marker([item.latitude, item.longitude], { icon })
@@ -294,13 +288,13 @@
     :global(.marker-cluster-small),
     :global(.marker-cluster-medium),
     :global(.marker-cluster-large) {
-        background-color: rgba(16, 185, 129, 0.6) !important;
+        background-color: rgba(34, 197, 94, 0.5) !important;
     }
 
     :global(.marker-cluster-small div),
     :global(.marker-cluster-medium div),
     :global(.marker-cluster-large div) {
-        background-color: rgba(16, 185, 129, 0.8) !important;
+        background-color: rgba(34, 197, 94, 0.7) !important;
         color: white !important;
         font-weight: bold !important;
     }
