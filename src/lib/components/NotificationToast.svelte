@@ -17,15 +17,15 @@
     function getColors(type) {
         switch (type) {
             case 'success':
-                return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200';
+                return 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 text-green-800 shadow-lg shadow-green-200/50';
             case 'info':
-                return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200';
+                return 'bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 text-blue-800 shadow-lg shadow-blue-200/50';
             case 'warning':
-                return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200';
+                return 'bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-orange-300 text-orange-800 shadow-lg shadow-orange-200/50';
             case 'error':
-                return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200';
+                return 'bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-300 text-red-800 shadow-lg shadow-red-200/50';
             default:
-                return 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+                return 'bg-gradient-to-r from-stone-50 to-gray-50 border-2 border-stone-300 text-stone-800 shadow-lg shadow-stone-200/50';
         }
     }
 
@@ -41,41 +41,41 @@
     }
 </script>
 
-<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md">
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-4 max-w-md">
     {#each $notifications as notification (notification.id)}
         <div
             transition:fly={{ y: 50, duration: 300 }}
-            class="border rounded-lg shadow-lg overflow-hidden {getColors(notification.type)} {notification.link ? 'cursor-pointer hover:shadow-xl transition-shadow' : ''}"
+            class="rounded-2xl overflow-hidden backdrop-blur-sm {getColors(notification.type)} {notification.link ? 'cursor-pointer hover:scale-105 hover:shadow-2xl transition-all' : 'transition-shadow'}"
             on:click={() => handleClick(notification)}
             on:keydown={(e) => e.key === 'Enter' && handleClick(notification)}
             role={notification.link ? 'button' : 'status'}
             tabindex={notification.link ? 0 : -1}
         >
-            <div class="flex items-start gap-3 p-4">
+            <div class="flex items-start gap-4 p-5">
                 <svelte:component
                     this={getIcon(notification.type)}
-                    class="w-5 h-5 flex-shrink-0 mt-0.5"
+                    class="w-6 h-6 flex-shrink-0 mt-0.5"
                 />
 
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium leading-tight">
+                    <p class="text-base font-semibold leading-snug">
                         {notification.message}
                     </p>
 
                     {#if notification.link && notification.linkText}
-                        <div class="flex items-center gap-1 mt-2 text-xs font-semibold opacity-90">
+                        <div class="flex items-center gap-2 mt-3 text-sm font-bold opacity-90 hover:opacity-100 transition-opacity">
                             <span>{notification.linkText}</span>
-                            <ArrowRight class="w-3 h-3" />
+                            <ArrowRight class="w-4 h-4" />
                         </div>
                     {/if}
                 </div>
 
                 <button
                     on:click|stopPropagation={() => handleClose(notification.id)}
-                    class="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+                    class="flex-shrink-0 opacity-50 hover:opacity-100 hover:scale-110 transition-all p-1 hover:bg-white/40 rounded-lg"
                     aria-label="Close notification"
                 >
-                    <X class="w-4 h-4" />
+                    <X class="w-5 h-5" />
                 </button>
             </div>
         </div>
