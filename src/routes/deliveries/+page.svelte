@@ -139,7 +139,7 @@
 
 <div class="max-w-7xl mx-auto px-4 py-8 min-h-screen bg-gradient-to-br from-amber-50/30 via-white to-green-50/30">
     <div class="mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+        <h1 class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             🚚 Manage Deliveries
         </h1>
         <p class="text-stone-600 text-lg">Track your incoming and outgoing food exchanges</p>
@@ -150,7 +150,7 @@
         <button
             class="px-8 py-4 font-semibold transition-all rounded-xl {activeTab === 'receiver'
                 ? 'bg-green-600 text-white shadow-lg shadow-green-200'
-                : 'text-stone-600 hover:text-green-700 hover:bg-green-50'}"
+                : 'text-stone-600 hover:text-green-600 hover:bg-green-50'}"
             on:click={() => activeTab = 'receiver'}
         >
             📥 As Receiver ({ongoingReceiver.length})
@@ -158,7 +158,7 @@
         <button
             class="px-8 py-4 font-semibold transition-all rounded-xl {activeTab === 'sender'
                 ? 'bg-green-600 text-white shadow-lg shadow-green-200'
-                : 'text-stone-600 hover:text-green-700 hover:bg-green-50'}"
+                : 'text-stone-600 hover:text-green-600 hover:bg-green-50'}"
             on:click={() => activeTab = 'sender'}
         >
             📤 As Sender ({ongoingSender.length})
@@ -182,11 +182,11 @@
                                 <CardContent class="p-7">
                                     <div class="flex justify-between items-start mb-5">
                                         <div class="flex-1">
-                                            <h3 class="text-2xl font-bold text-green-800 mb-2">
+                                            <h3 class="text-2xl font-bold text-green-700 mb-2">
                                                 {delivery.quantity} {delivery.unit} of {delivery.item_name}
                                             </h3>
                                             <p class="text-base text-stone-700 font-semibold">
-                                                📦 From: <span class="text-green-700">{delivery.sender_name}</span>
+                                                📦 From: <span class="text-green-600">{delivery.sender_name}</span>
                                             </p>
                                             {#if delivery.sender_address}
                                                 <p class="text-sm text-stone-600 mt-1">
@@ -218,14 +218,14 @@
                                             };
                                         }}>
                                             <input type="hidden" name="request_id" value={delivery.id} />
-                                            <Button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all">
+                                            <Button type="submit" class="w-full bg-green-600 hover:bg-green-600 text-white py-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all">
                                                 <CheckCircle class="w-5 h-5 mr-2" />
-                                                ✓ Mark as Received
+                                                Mark as Received
                                             </Button>
                                         </form>
                                     {:else if delivery.delivery_status === 'accepted'}
                                         <p class="text-base text-stone-600 bg-amber-50 px-4 py-3 rounded-lg border border-amber-200 font-medium">
-                                            ⏳ Waiting for sender to ship this item
+                                            Waiting for sender to ship this item
                                         </p>
                                     {/if}
                                 </CardContent>
@@ -238,7 +238,7 @@
             <!-- Completed Deliveries -->
             {#if completedReceiver.length > 0}
                 <div>
-                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-green-700">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-green-600">
                         <CheckCircle class="w-7 h-7" />
                         Completed Deliveries
                     </h2>
@@ -248,14 +248,14 @@
                                 <CardContent class="p-7">
                                     <div class="flex justify-between items-start">
                                         <div>
-                                            <h3 class="text-xl font-bold text-green-800">
+                                            <h3 class="text-xl font-bold text-green-700">
                                                 {delivery.quantity} {delivery.unit} of {delivery.item_name}
                                             </h3>
                                             <p class="text-base text-stone-700 mt-2 font-semibold">
-                                                📦 From: <span class="text-green-700">{delivery.sender_name}</span>
+                                                📦 From: <span class="text-green-600">{delivery.sender_name}</span>
                                             </p>
                                             <p class="text-sm text-stone-600 mt-2 bg-green-50 px-3 py-2 rounded-lg inline-block border border-green-200">
-                                                ✓ Received {formatTimeAgo(delivery.received_at)}
+                                                Received {formatTimeAgo(delivery.received_at)}
                                             </p>
                                         </div>
                                         <Badge variant="success" class="font-bold px-4 py-2">
@@ -293,11 +293,11 @@
                                 <CardContent class="p-7">
                                     <div class="flex justify-between items-start mb-5">
                                         <div class="flex-1">
-                                            <h3 class="text-2xl font-bold text-green-800 mb-2">
+                                            <h3 class="text-2xl font-bold text-green-700 mb-2">
                                                 {delivery.quantity} {delivery.unit} of {delivery.item_name}
                                             </h3>
                                             <p class="text-base text-stone-700 font-semibold">
-                                                📫 To: <span class="text-green-700">{delivery.receiver_name}</span>
+                                                📫 To: <span class="text-green-600">{delivery.receiver_name}</span>
                                             </p>
                                             {#if delivery.receiver_address}
                                                 <p class="text-sm text-stone-600 mt-1">
@@ -329,7 +329,7 @@
                                             };
                                         }}>
                                             <input type="hidden" name="request_id" value={delivery.id} />
-                                            <Button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all">
+                                            <Button type="submit" class="w-full bg-green-600 hover:bg-green-600 text-white py-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all">
                                                 <Truck class="w-5 h-5 mr-2" />
                                                 🚚 Mark as Sent
                                             </Button>
@@ -350,7 +350,7 @@
             <!-- Completed Deliveries -->
             {#if completedSender.length > 0}
                 <div>
-                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-green-700">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-green-600">
                         <CheckCircle class="w-7 h-7" />
                         Completed Deliveries
                     </h2>
@@ -360,14 +360,14 @@
                                 <CardContent class="p-7">
                                     <div class="flex justify-between items-start">
                                         <div>
-                                            <h3 class="text-xl font-bold text-green-800">
+                                            <h3 class="text-xl font-bold text-green-700">
                                                 {delivery.quantity} {delivery.unit} of {delivery.item_name}
                                             </h3>
                                             <p class="text-base text-stone-700 mt-2 font-semibold">
-                                                📫 To: <span class="text-green-700">{delivery.receiver_name}</span>
+                                                📫 To: <span class="text-green-600">{delivery.receiver_name}</span>
                                             </p>
                                             <p class="text-sm text-stone-600 mt-2 bg-green-50 px-3 py-2 rounded-lg inline-block border border-green-200">
-                                                ✓ Delivered {formatTimeAgo(delivery.received_at)}
+                                                Delivered {formatTimeAgo(delivery.received_at)}
                                             </p>
                                         </div>
                                         <Badge variant="success" class="font-bold px-4 py-2">

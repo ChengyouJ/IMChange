@@ -106,7 +106,7 @@
 <div class="max-w-7xl mx-auto px-4 py-8 min-h-screen bg-gradient-to-br from-amber-50/30 via-white to-green-50/30">
     <div class="mb-8">
         <h1
-            class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent"
+            class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"
         >
             📦 Your Dashboard
         </h1>
@@ -118,7 +118,7 @@
         <div class="lg:col-span-2 space-y-6">
             <Card class="border-green-100 shadow-lg rounded-2xl overflow-hidden bg-white/80 backdrop-blur-sm">
                 <CardHeader class="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100 pb-5">
-                    <CardTitle class="text-2xl font-bold text-green-800">🌾 My Surplus Inventory</CardTitle>
+                    <CardTitle class="text-2xl font-bold text-green-700">🌾 My Surplus Inventory</CardTitle>
                     <p class="text-sm text-stone-600 mt-2">Share what you have to help others</p>
                 </CardHeader>
                 <CardContent class="space-y-6 p-6">
@@ -144,7 +144,7 @@
                         }}
                         class="p-6 bg-gradient-to-br from-green-50/80 to-emerald-50/50 rounded-xl space-y-4 border-2 border-green-100"
                     >
-                        <h3 class="font-bold text-xl text-green-800">✨ Add New Item</h3>
+                        <h3 class="font-bold text-xl text-green-700">Add New Item</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Input
                                 name="name"
@@ -167,7 +167,7 @@
                             />
                         </div>
                         <div class="flex justify-end">
-                            <Button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all font-semibold">➕ Add Item</Button>
+                            <Button type="submit" class="bg-green-600 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all font-semibold">Add Item</Button>
                         </div>
                     </form>
 
@@ -176,16 +176,16 @@
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-green-50 hover:bg-green-50">
-                                    <TableHead class="font-bold text-green-800">Item</TableHead>
-                                    <TableHead class="font-bold text-green-800">Quantity</TableHead>
-                                    <TableHead class="font-bold text-green-800">Status</TableHead>
-                                    <TableHead class="font-bold text-green-800">Action</TableHead>
+                                    <TableHead class="font-bold text-green-700">Item</TableHead>
+                                    <TableHead class="font-bold text-green-700">Quantity</TableHead>
+                                    <TableHead class="font-bold text-green-700">Status</TableHead>
+                                    <TableHead class="font-bold text-green-700">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {#each data.items as item}
                                     <TableRow class="hover:bg-green-50/50 transition-colors">
-                                        <TableCell class="font-semibold text-green-800"
+                                        <TableCell class="font-semibold text-green-700"
                                             >{item.name}</TableCell
                                         >
                                         <TableCell class="text-stone-700 font-medium"
@@ -262,13 +262,13 @@
                 <CardHeader class="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
                     <CardTitle class="text-xl font-bold text-blue-800">📬 Incoming Requests</CardTitle>
                     <p class="text-xs text-stone-600 mt-2">
-                        Accepted requests appear on your <a href="/deliveries" class="text-green-600 underline hover:text-green-700 font-semibold">Deliveries</a> page
+                        Accepted requests appear on your <a href="/deliveries" class="text-green-600 underline hover:text-green-600 font-semibold">Deliveries</a> page
                     </p>
                 </CardHeader>
                 <CardContent class="p-6">
                     {#if data.incomingRequests.length === 0}
                         <div class="text-center py-8 text-stone-500">
-                            <p class="text-lg">✨ No pending requests</p>
+                            <p class="text-lg">No pending requests</p>
                             <p class="text-sm mt-1">Requests will appear here</p>
                         </div>
                     {:else}
@@ -279,12 +279,12 @@
                                 >
                                     <div>
                                         <p class="text-base text-stone-700 leading-relaxed">
-                                            <span class="font-bold text-green-700"
+                                            <span class="font-bold text-green-600"
                                                 >{req.requester_name}</span
                                             >
                                             <span class="text-stone-600">requests</span>
                                             <span
-                                                class="font-bold text-green-800"
+                                                class="font-bold text-green-700"
                                                 >{req.item_name}</span
                                             >
                                         </p>
@@ -331,9 +331,9 @@
                                                     type="submit"
                                                     variant="default"
                                                     size="sm"
-                                                    class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
+                                                    class="w-full bg-green-600 hover:bg-green-600 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
                                                 >
-                                                    ✓ Accept
+                                                    Accept
                                                 </Button>
                                             </form>
                                             <form
@@ -369,7 +369,7 @@
                                                     size="sm"
                                                     class="w-full border-2 border-stone-300 text-stone-700 hover:bg-stone-100 font-semibold py-3 rounded-lg"
                                                 >
-                                                    ✗ Reject
+                                                    Reject
                                                 </Button>
                                             </form>
                                         </div>
@@ -377,7 +377,7 @@
                                         <p
                                             class="text-sm text-stone-600 bg-green-50 p-3 rounded-lg border border-green-200"
                                         >
-                                            📧 Contact: <span class="font-semibold text-green-800"
+                                            📧 Contact: <span class="font-semibold text-green-700"
                                                 >{req.requester_email}</span
                                             >
                                         </p>
@@ -394,13 +394,13 @@
                 <CardHeader class="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-100">
                     <CardTitle class="text-xl font-bold text-purple-800">📮 My Requests</CardTitle>
                     <p class="text-xs text-stone-600 mt-2">
-                        Accepted requests appear on your <a href="/deliveries" class="text-green-600 underline hover:text-green-700 font-semibold">Deliveries</a> page
+                        Accepted requests appear on your <a href="/deliveries" class="text-green-600 underline hover:text-green-600 font-semibold">Deliveries</a> page
                     </p>
                 </CardHeader>
                 <CardContent class="p-6">
                     {#if data.outgoingRequests.length === 0}
                         <div class="text-center py-8 text-stone-500">
-                            <p class="text-lg">✨ No pending requests</p>
+                            <p class="text-lg">No pending requests</p>
                             <p class="text-sm mt-1">Start searching for items</p>
                         </div>
                     {:else}
@@ -414,7 +414,7 @@
                                             class="font-bold text-purple-700"
                                             >{req.item_name}</span
                                         >
-                                        <span class="text-stone-600">from</span> <span class="font-semibold text-green-700">{req.donor_name}</span>
+                                        <span class="text-stone-600">from</span> <span class="font-semibold text-green-600">{req.donor_name}</span>
                                     </p>
                                     <Badge
                                         variant={getRequestStatusVariant(
